@@ -1,0 +1,26 @@
+# Node modules
+node_modules/
+build/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+db/database.db
+
+# Misc
+*.log
+.DS_Store
+.vscode/
+.idea/
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+db/database.db
+instance/
+.env
+venv/
+
