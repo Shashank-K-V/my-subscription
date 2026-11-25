@@ -19,7 +19,7 @@ jobs:
       - run: pytest backend/tests -q
         env:
           JWT_SECRET_KEY: test-secret-that-is-never-used-outside-tests
-          DATABASE_URL: sqlite:///:memory:
+          DATABASE_URL: "sqlite:///:memory:"
 
   frontend-build:
     runs-on: ubuntu-latest
