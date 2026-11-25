@@ -60,7 +60,7 @@ The frontend is a static SPA served from Vercel's CDN. All data fetches go throu
 **1. Clone the repo**
 
 ```bash
-git clone https://github.com/your-username/my-subscription.git
+git clone https://github.com/Shashank-K-V/my-subscription.git
 cd my-subscription
 ```
 
@@ -84,12 +84,15 @@ npm start
 
 **4. Environment variables**
 
-Create a `.env` file in `backend/`:
+Copy the safe template, then replace the JWT value with a long random secret:
 
-```env
-DATABASE_URL=postgresql://user:password@host/dbname
-JWT_SECRET_KEY=your-secret-key
+```bash
+cp backend/.env.example backend/.env
+python -c "import secrets; print(secrets.token_urlsafe(48))"
 ```
+
+`DATABASE_URL` is optional for local development (SQLite is used by default) and
+required for the hosted PostgreSQL configuration. Never commit the `.env` file.
 
 **5. Run both together**
 

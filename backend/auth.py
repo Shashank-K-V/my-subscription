@@ -18,7 +18,8 @@ def signup():
     if User.query.filter_by(username=username).first():
         return jsonify({"error": "Username already exists"}), 400
 
-    new_user = User(username=username, password=password)
+    new_user = User(username=username)
+    new_user.set_password(password)
     db.session.add(new_user)
     db.session.commit()
 
@@ -32,8 +33,8 @@ def login():
     username = data.get("username")
     password = data.get("password")
 
-    user = User.query.filter_by(username=username, password=password).first()
-    if not user:
+    user = User.query.filter_by(username=username).first()
+    if not user or not user.check_password(password):
         return jsonify({"error": "Invalid credentials"}), 401
 
     access_token = create_access_token(identity=user.id, expires_delta=timedelta(hours=3))

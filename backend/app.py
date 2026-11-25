@@ -4,12 +4,21 @@ from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity
 from models import db, Subscription
 from auth import auth_bp
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
 # ---------- JWT CONFIG ----------
-app.config["JWT_SECRET_KEY"] = "supersecretkey"  # change in production
+jwt_secret = os.environ.get("JWT_SECRET_KEY")
+if not jwt_secret:
+    raise RuntimeError(
+        "JWT_SECRET_KEY is required. Copy backend/.env.example to backend/.env "
+        "and replace the example value before starting the API."
+    )
+app.config["JWT_SECRET_KEY"] = jwt_secret
 app.config["JWT_TOKEN_LOCATION"] = ["headers"]
 app.config["JWT_HEADER_NAME"] = "Authorization"
 app.config["JWT_HEADER_TYPE"] = "Bearer"
@@ -20,7 +29,9 @@ jwt = JWTManager(app)
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 db_dir = os.path.join(BASE_DIR, "db")
 os.makedirs(db_dir, exist_ok=True)
-app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{os.path.join(db_dir, 'database.db')}"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
+    "DATABASE_URL", f"sqlite:///{os.path.join(db_dir, 'database.db')}"
+)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
@@ -66,7 +77,6 @@ def add_subscription():
 @jwt_required()
 def get_subscriptions():
     current_user = get_jwt_identity()
-    print("🧠 Current user from token:", current_user)
     subs = Subscription.query.filter_by(user_id=current_user).all()
     return jsonify([s.to_dict() for s in subs]), 200
 
@@ -105,4 +115,4 @@ def home():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=os.environ.get("FLASK_DEBUG", "0") == "1")
