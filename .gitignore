@@ -7,7 +7,7 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-db/database.db
+**/db/*.db
 
 # Misc
 *.log
@@ -19,7 +19,7 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-db/database.db
+**/db/*.db
 instance/
 .env
 venv/
